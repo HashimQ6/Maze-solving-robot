@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Maze-Solving Robot</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color:99 #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        section {
+            padding: 20px;
+            margin: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+            min-width: 250px;
+        }
+        code {
+            background-color: #eee;
+            padding: 10px;
+            display: block;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Arduino Maze-Solving Robot</h1>
+    </header>
+    
+    <section>
+        <h2>Project Overview</h2>
+        <p>This project showcases an Arduino-based robot that can solve mazes autonomously. The robot uses ultrasonic sensors to detect obstacles and follows the walls to navigate through the maze. It can be enhanced further by adding advanced algorithms such as A* pathfinding or reinforcement learning for more intelligent decision-making.</p>
+    </section>
+
+    <section>
+        <h2>Components Used</h2>
+        <ul>
+            <li>Arduino Uno</li>
+            <li>DC Motors and Motor Driver (L298N)</li>
+            <li>Ultrasonic Sensor (HC-SR04)</li>
+            <li>Infrared Sensors for Line Following</li>
+            <li>Robot Chassis with Wheels</li>
+            <li>Battery Pack (6V)</li>
+            <li>Jumper Wires and Breadboard</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Arduino Code</h2>
+        <p>Below is the Arduino code that allows the robot to follow walls and navigate through the maze.</p>
+        <code>
+            // Pin Definitions<br>
+            #define motor1A 5   // Motor 1 - A<br>
+            #define motor1B 6   // Motor 1 - B<br>
+            #define motor2A 9   // Motor 2 - A<br>
+            #define motor2B 10  // Motor 2 - B<br>
+            #define trigPin 12  // Ultrasonic Trigger Pin<br>
+            #define echoPin 13  // Ultrasonic Echo Pin<br><br>
+
+            // Speed of the robot<br>
+            #define motorSpeed 255<br><br>
+
+            // Variables<br>
+            long duration;<br>
+            int distance;<br><br>
+
+            void setup() {<br>
+                // Initialize motor pins<br>
+                pinMode(motor1A, OUTPUT);<br>
+                pinMode(motor1B, OUTPUT);<br>
+                pinMode(motor2A, OUTPUT);<br>
+                pinMode(motor2B, OUTPUT);<br><br>
+
+                // Initialize ultrasonic sensor pins<br>
+                pinMode(trigPin, OUTPUT);<br>
+                pinMode(echoPin, INPUT);<br><br>
+
+                Serial.begin(9600);<br>
+            }<br><br>
+
+            void loop() {<br>
+                // Measure distance using ultrasonic sensor<br>
+                digitalWrite(trigPin, LOW);<br>
+                delayMicroseconds(2);<br>
+                digitalWrite(trigPin, HIGH);<br>
+                delayMicroseconds(10);<br>
+                digitalWrite(trigPin, LOW);<br>
+                duration = pulseIn(echoPin, HIGH);<br>
+                distance = duration * 0.034 / 2;<br><br>
+
+                // Print the distance for debugging<br>
+                Serial.print("Distance: ");<br>
+                Serial.println(distance);<br><br>
+
+                // Simple wall-following logic<br>
+                if (distance < 20) {<br>
+                    // If the robot is too close to the wall, turn right<br>
+                    turnRight();<br>
+                } else {<br>
+                    // Move forward<br>
+                    moveForward();<br>
+                }<br>
+            }<br><br>
+
+            // Move forward<br>
+            void moveForward() {<br>
+                analogWrite(motor1A, motorSpeed);<br>
+                analogWrite(motor1B, LOW);<br>
+                analogWrite(motor2A, motorSpeed);<br>
+                analogWrite(motor2B, LOW);<br>
+            }<br><br>
+
+            // Turn right<br>
+            void turnRight() {<br>
+                analogWrite(motor1A, motorSpeed);<br>
+                analogWrite(motor1B, LOW);<br>
+                analogWrite(motor2A, LOW);<br>
+                analogWrite(motor2B, motorSpeed);<br>
+                delay(500);  // Turn for 500ms<br>
+                moveForward();<br>
+            }<br>
+        </code>
+    </section>
+
+    <section>
+        <h2>How It Works</h2>
+        <p>The robot uses an ultrasonic sensor to detect obstacles in front of it. If the robot detects an obstacle, it will turn right and continue moving. This behavior is based on the "wall-following" technique, which ensures that the robot can navigate through mazes by following walls and avoiding obstacles.</p>
+    </section>
+
+    <footer>
+        <p style="text-align:center; font-size: 14px; color: #888;">&copy; 2024 Arduino Maze-Solving Robot. Robotfest Competition.</p>
+    </footer>
+</body>
+</html>
